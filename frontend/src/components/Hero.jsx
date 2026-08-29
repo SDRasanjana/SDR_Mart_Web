@@ -3,25 +3,31 @@ import React, { useState, useEffect, useRef } from 'react';
 const slides = [
   {
     id: 0,
-    title: 'Explore Our Curated Collections!',
-    subtitle: 'Perfumes, Tech, Decor & More',
-    buttonText: 'Shop',
+    titlePrefix: 'Shop Smarter. ',
+    titleHighlight: 'Shop with SDR MART.',
+    subtitle: 'Discover Premium Perfumes, Tech Accessories & Lifestyle Decor',
+    primaryBtn: 'Shop Collection',
+    secondaryBtn: 'Buy Now',
     image: '/images/hero_perfumes.jpg',
     alt: 'Curated Luxury Perfumes',
   },
   {
     id: 1,
-    title: 'Discover Smart Tech & Accessories!',
-    subtitle: 'Mobiles, Earbuds, Chargers & More',
-    buttonText: 'Shop Tech',
+    titlePrefix: 'Smart Tech & Gadgets. ',
+    titleHighlight: 'Only at SDR MART.',
+    subtitle: 'Mobiles, Earbuds, Fast Chargers & Tech Essentials',
+    primaryBtn: 'Explore Tech',
+    secondaryBtn: 'Buy Now',
     image: '/images/cat_mobile.jpg',
     alt: 'Mobile & Tech Accessories',
   },
   {
     id: 2,
-    title: 'Elevate Your Home & Living Space!',
-    subtitle: 'Wall Art, Vases, Accents & Decor',
-    buttonText: 'Shop Decor',
+    titlePrefix: 'Elevate Your Home. ',
+    titleHighlight: 'Styled by SDR MART.',
+    subtitle: 'Wall Art, Luxury Vases, Accents & Living Decor',
+    primaryBtn: 'Shop Decor',
+    secondaryBtn: 'Buy Now',
     image: '/images/cat_wallart.jpg',
     alt: 'Fancy Items and Wall Art',
   },
@@ -34,7 +40,6 @@ export default function Hero() {
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef(null);
 
-  // Helper function to reset auto-slide timer when user manually interacts
   const resetTimer = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -46,7 +51,6 @@ export default function Hero() {
     }
   };
 
-  // Start auto-slide on mount and handles hover state
   useEffect(() => {
     if (!isPaused) {
       timerRef.current = setInterval(() => {
@@ -89,24 +93,24 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* ── Sweeping Golden Arc SVG Divider ── */}
+      {/* ── Sweeping Light Blue & Magenta Arc SVG Divider ── */}
       <div className="hero-curve-divider">
         <svg
           viewBox="0 0 1200 400"
           preserveAspectRatio="none"
           className="hero-curve-svg"
         >
-          {/* Navy Background Overlay */}
+          {/* Light Blue background section overlay */}
           <path
-            d="M 0,0 L 700,0 C 830,140 780,300 620,400 L 0,400 Z"
-            fill="#0D2235"
+            d="M 0,0 L 680,0 C 810,140 760,300 600,400 L 0,400 Z"
+            fill="#F5F7FF"
           />
-          {/* Gold Curved Border Line */}
+          {/* Magenta Accent Curve Stroke */}
           <path
-            d="M 700,0 C 830,140 780,300 620,400"
+            d="M 680,0 C 810,140 760,300 600,400"
             fill="none"
-            stroke="#C5A059"
-            strokeWidth="8"
+            stroke="#E6007E"
+            strokeWidth="6"
             strokeLinecap="round"
           />
         </svg>
@@ -114,16 +118,22 @@ export default function Hero() {
 
       {/* ── Left Content Overlay ── */}
       <div className="hero-content-container">
-        <div
-          className="hero-text-content"
-          key={current.id}
-        >
-          <h1 className="hero-title serif">{current.title}</h1>
+        <div className="hero-text-content" key={current.id}>
+          <h1 className="hero-title serif">
+            {current.titlePrefix}
+            <br />
+            <span className="text-pink">{current.titleHighlight}</span>
+          </h1>
           <p className="hero-subtitle">{current.subtitle}</p>
-          <button className="hero-shop-btn">{current.buttonText}</button>
+          
+          {/* Action Buttons: Navy Primary + Pink Secondary */}
+          <div className="hero-actions-wrap">
+            <button className="btn-primary-navy">{current.primaryBtn}</button>
+            <button className="btn-secondary-pink">{current.secondaryBtn}</button>
+          </div>
         </div>
 
-        {/* ── Carousel Dots (Positioned under text inside navy section) ── */}
+        {/* ── Carousel Dots ── */}
         <div className="hero-dots-wrap" aria-label="Banner slides navigation">
           {slides.map((_, idx) => (
             <button

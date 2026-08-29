@@ -6,6 +6,9 @@ import CategoryGrid from './components/CategoryGrid';
 import NewArrivals from './components/NewArrivals';
 import Footer from './components/Footer';
 import Login from './pages/Login';
+import Register from './pages/Register';
+import Perfumes from './pages/Perfumes';
+import MobileAccessories from './pages/MobileAccessories';
 
 /* ── Home page assembled from sections ── */
 function HomePage() {
@@ -22,24 +25,18 @@ function HomePage() {
   );
 }
 
-/* ── Login page (no navbar/footer chrome, standalone) ── */
-function LoginPage() {
-  return (
-    <>
-      <Login />
-    </>
-  );
-}
-
 /* ── Root with Router ── */
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/"       element={<HomePage />} />
-        <Route path="/login"  element={<LoginPage />} />
+        <Route path="/"          element={<HomePage />} />
+        <Route path="/perfumes"            element={<Perfumes />} />
+        <Route path="/mobile-accessories"  element={<MobileAccessories />} />
+        <Route path="/login"     element={<Login />} />
+        <Route path="/register"  element={<Register />} />
         {/* Fallback — redirect unknown routes to home */}
-        <Route path="*"       element={<HomePage />} />
+        <Route path="*"          element={<HomePage />} />
       </Routes>
     </BrowserRouter>
   );

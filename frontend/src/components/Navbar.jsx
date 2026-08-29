@@ -1,18 +1,17 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 import { Search, User, ShoppingCart } from "lucide-react";
 import logoImg from "../assets/SDR Mart logo.png";
 
 export default function Navbar() {
-  const [active, setActive] = useState("Home");
+  const location = useLocation();
 
-  const links = [
-    "Home",
-    "Featured Category",
-    "Perfumes",
-    "Mobile Accessories",
-    "Fancy Items",
-    "Contact",
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Perfumes", path: "/perfumes" },
+    { name: "Mobile Accessories", path: "/mobile-accessories" },
+    { name: "Fancy Items", path: "/#categories" },
+    { name: "Contact", path: "/#footer" },
   ];
 
   return (
@@ -34,8 +33,8 @@ export default function Navbar() {
         >
           <input
             type="search"
-            placeholder="Search"
-            aria-label="Search products"
+            placeholder="Search SDR MART products..."
+            aria-label="Search SDR MART products"
           />
           <button
             className="nav-search-btn"
@@ -69,19 +68,22 @@ export default function Navbar() {
 
       {/* ── Secondary Nav ── */}
       <nav className="navbar-nav" aria-label="Main navigation">
-        {links.map((link) => (
-          <a
-            key={link}
-            href="#"
-            className={active === link ? "active" : ""}
-            onClick={(e) => {
-              e.preventDefault();
-              setActive(link);
-            }}
-          >
-            {link}
-          </a>
-        ))}
+        {navLinks.map((link) => {
+          const isActive =
+            link.path === "/"
+              ? location.pathname === "/"
+              : location.pathname.startsWith(link.path);
+
+          return (
+            <Link
+              key={link.name}
+              to={link.path}
+              className={isActive ? "active" : ""}
+            >
+              {link.name}
+            </Link>
+          );
+        })}
       </nav>
     </header>
   );
