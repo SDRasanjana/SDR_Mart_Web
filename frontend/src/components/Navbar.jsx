@@ -1,17 +1,38 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Search, User, ShoppingCart } from "lucide-react";
 import logoImg from "../assets/SDR Mart logo.png";
 
 export default function Navbar() {
   const location = useLocation();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("sdr_user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (e) {}
+    }
+  }, []);
+
+  const getFirstName = (fullName) => {
+    if (!fullName) return "Account";
+    return fullName.trim().split(" ")[0];
+  };
+
+  const handleLogout = () => {
+    if (window.confirm("Are you sure you want to log out?")) {
+      localStorage.removeItem("sdr_user");
+      window.location.reload();
+    }
+  };
 
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Perfumes", path: "/perfumes" },
     { name: "Mobile Accessories", path: "/mobile-accessories" },
     { name: "Fancy Items", path: "/#categories" },
-    { name: "Contact", path: "/#footer" },
   ];
 
   return (
@@ -47,11 +68,18 @@ export default function Navbar() {
 
         {/* Right Actions */}
         <div className="nav-actions">
-          {/* Account — links to /login */}
-          <Link to="/login" className="nav-action-btn">
-            <User size={20} />
-            <span>Account</span>
-          </Link>
+          {/* Account — shows first name if logged in, otherwise links to /login */}
+          {user ? (
+            <div className="nav-action-btn" style={{ cursor: "pointer" }} onClick={handleLogout} title="Click to logout">
+              <User size={20} />
+              <span>{getFirstName(user.name)}</span>
+            </div>
+          ) : (
+            <Link to="/login" className="nav-action-btn">
+              <User size={20} />
+              <span>Account</span>
+            </Link>
+          )}
 
           {/* Cart */}
           <button className="nav-action-btn" aria-label="View cart, 0 items">

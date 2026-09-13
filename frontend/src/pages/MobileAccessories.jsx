@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { mobileAccessoriesData, mobileBrands, mobileCategories } from "../data/mobileAccessoriesData";
@@ -35,7 +36,7 @@ const MobileFallbackImage = ({ category }) => {
 };
 
 /* ── Individual Mobile Accessory Product Card ── */
-function MobileCard({ product }) {
+function MobileCard({ product, onBuyNow }) {
   const [imgError, setImgError] = useState(false);
 
   return (
@@ -80,7 +81,11 @@ function MobileCard({ product }) {
           <ShoppingCart size={12} style={{ marginRight: "4px" }} />
           Add to Cart
         </button>
-        <button className="btn-card-buy" aria-label={`Buy ${product.title} now`}>
+        <button
+          className="btn-card-buy"
+          aria-label={`Buy ${product.title} now`}
+          onClick={() => onBuyNow(product)}
+        >
           <Zap size={12} style={{ marginRight: "4px" }} />
           Buy Now
         </button>
@@ -91,10 +96,21 @@ function MobileCard({ product }) {
 
 /* ── Main Mobile Accessories Catalog Page ── */
 export default function MobileAccessories() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
   const [sortBy, setSortBy] = useState("featured");
+
+  /* ── Buy Now auth guard ── */
+  const handleBuyNow = (product) => {
+    const user = localStorage.getItem("sdr_user");
+    if (!user) {
+      navigate(`/login?redirect=/product/${product.id}`);
+    } else {
+      navigate(`/product/${product.id}`);
+    }
+  };
 
   const filteredProducts = useMemo(() => {
     return mobileAccessoriesData
@@ -229,7 +245,7 @@ export default function MobileAccessories() {
             ) : (
               <div className="mobile-products-grid">
                 {filteredProducts.map((product) => (
-                  <MobileCard key={product.id} product={product} />
+                  <MobileCard key={product.id} product={product} onBuyNow={handleBuyNow} />
                 ))}
               </div>
             )}

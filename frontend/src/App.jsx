@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Perfumes from './pages/Perfumes';
 import MobileAccessories from './pages/MobileAccessories';
+import ProductDetail from './pages/ProductDetail';
 
 /* ── Home page assembled from sections ── */
 function HomePage() {
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/"          element={<HomePage />} />
         <Route path="/perfumes"            element={<Perfumes />} />
         <Route path="/mobile-accessories"  element={<MobileAccessories />} />
+        <Route path="/product/:id"         element={<ProductDetail />} />
         <Route path="/login"     element={<Login />} />
         <Route path="/register"  element={<Register />} />
         {/* Fallback — redirect unknown routes to home */}

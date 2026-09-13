@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { perfumesData, perfumeBrands, perfumeCategories } from "../data/perfumesData";
@@ -26,7 +27,7 @@ const PerfumeFallbackImage = () => (
 );
 
 /* ── Perfume Product Card — same layout as Mobile Accessories ── */
-function PerfumeCard({ product }) {
+function PerfumeCard({ product, onBuyNow }) {
   const [imgError, setImgError] = useState(false);
 
   return (
@@ -77,7 +78,11 @@ function PerfumeCard({ product }) {
           <ShoppingCart size={12} style={{ marginRight: "4px" }} />
           Add to Cart
         </button>
-        <button className="btn-card-buy" aria-label={`Buy ${product.title} now`}>
+        <button
+          className="btn-card-buy"
+          aria-label={`Buy ${product.title} now`}
+          onClick={() => onBuyNow(product)}
+        >
           <Zap size={12} style={{ marginRight: "4px" }} />
           Buy Now
         </button>
@@ -88,10 +93,21 @@ function PerfumeCard({ product }) {
 
 /* ── Perfumes Catalog Page ── */
 export default function Perfumes() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
   const [sortBy, setSortBy] = useState("featured");
+
+  /* ── Buy Now auth guard ── */
+  const handleBuyNow = (product) => {
+    const user = localStorage.getItem("sdr_user");
+    if (!user) {
+      navigate(`/login?redirect=/product/${product.id}`);
+    } else {
+      navigate(`/product/${product.id}`);
+    }
+  };
 
   const filteredProducts = useMemo(() => {
     return perfumesData
@@ -221,7 +237,7 @@ export default function Perfumes() {
               /* ── Reuse mobile-products-grid for consistent 5-column layout ── */
               <div className="mobile-products-grid">
                 {filteredProducts.map((product) => (
-                  <PerfumeCard key={product.id} product={product} />
+                  <PerfumeCard key={product.id} product={product} onBuyNow={handleBuyNow} />
                 ))}
               </div>
             )}

@@ -82,7 +82,7 @@ export default function Register() {
     return e;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const v = validate();
     if (Object.keys(v).length) {
@@ -90,16 +90,32 @@ export default function Register() {
       return;
     }
     setErrors({});
-    setLoading(true);
-    
-    // Simulate successful registration
-    setTimeout(() => {
+    // Call backend API
+    try {
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName, email, password }),
+      });
+      
+      const data = await response.json();
+      
       setLoading(false);
+      
+      if (!response.ok) {
+        setErrors({ email: data.message || "Registration failed" });
+        return;
+      }
+      
       setSuccessMsg("Account created successfully! Redirecting to sign in…");
       setTimeout(() => {
         navigate("/login");
       }, 1500);
-    }, 1200);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      setErrors({ email: "Server error. Please try again later." });
+    }
   };
 
   return (

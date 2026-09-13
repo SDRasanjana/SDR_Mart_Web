@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import loginModel from "../assets/login_page.png";
 import "../css/login.css";
 
@@ -66,6 +66,8 @@ const InstagramIcon = () => (
 );
 
 export default function Login() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPwd, setShowPwd] = useState(false);
@@ -83,7 +85,7 @@ export default function Login() {
     return e;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const v = validate();
     if (Object.keys(v).length) {
@@ -92,8 +94,35 @@ export default function Login() {
     }
     setErrors({});
     setLoading(true);
-    // TODO: connect to backend auth
-    setTimeout(() => setLoading(false), 1500);
+    // Call backend API
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      const data = await response.json();
+      
+      setLoading(false);
+      
+      if (!response.ok) {
+        setErrors({ email: data.message || "Login failed" });
+        return;
+      }
+      
+      // Store user session in localStorage
+      localStorage.setItem("sdr_user", JSON.stringify({ name: data.user.name, email: data.user.email }));
+      
+      // Redirect back to the page that triggered the login (e.g. product page)
+      const params = new URLSearchParams(location.search);
+      const redirectPath = params.get("redirect") || "/";
+      navigate(redirectPath);
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+      setErrors({ email: "Server error. Please try again later." });
+    }
   };
 
   return (
